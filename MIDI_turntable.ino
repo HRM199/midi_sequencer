@@ -10,10 +10,12 @@ int display_brightness = 20 ; // 0-255
 
 //// Main variables used ///////////////////////////////////
 
-int i,sequence_number,sequence_step,step_value,tens,ones,data_step;
+int i,sequence_number,sequence_step,step_value,tens,ones,data_step,fader_1,fader_2;
 int count = 1;
 boolean start_delay,counting_delay,next_step,next_sequence,last_sequence,wait_for_high,wait_for_high_2,trigger_sequence;
-unsigned long start_of_delay,debounce,debounce_2;
+unsigned long start_of_delay,debounce,debounce_2,delay_1,delay_2;
+
+int fade_up_1 = true,fade_up_2 = true;
 
 
 //// MIDI Variables ////////////////////////////////////
@@ -30,6 +32,9 @@ int midi_mode,midi_trigger;
 int pinmap[8] = {6,2,9,11,7,5,10,12}; // New pinmap reflects timers
 //int pinmap[8] = {2,11,9,3,4,12,10,5}; // Mega Pinmap
 //int pinmap[8] = {2,5,9,11,8,6,10,3}; // Uno Pinmap
+int fading_pin_1 = 3;
+int fading_pin_2 = 8;
+
 int next_button = 14;
 int last_button = 15;
 
@@ -53,8 +58,6 @@ write_to_display(2,0);
     Wire.write(1);      
     Wire.write(display_brightness);    
   Wire.endTransmission();
-  
-  
 
 pinMode(13,OUTPUT);
 digitalWrite(13,0);
@@ -129,6 +132,17 @@ if(trigger_sequence)
       }
       
   }
+     
+     if(fade_up_1 && millis() - delay_1 >= 3) { analogWrite(fading_pin_1,fader_1); fader_1++; delay_1 = millis();}     
+     if(!fade_up_1 && millis() - delay_1 >= 1) { analogWrite(fading_pin_1, fader_1); fader_1--; delay_1 = millis();}  
+     if(fader_1 == 255) {fade_up_1 = false;}
+     if(fader_1 == 0) {fade_up_1 = true;}
+     
+     if(fade_up_2 && millis() - delay_2 >= 6) { analogWrite(fading_pin_2,fader_2); fader_2++; delay_2 = millis();}     
+     if(!fade_up_2 && millis() - delay_2 >= 6) { analogWrite(fading_pin_2, fader_2); fader_2--; delay_2 = millis();}  
+     if(fader_2 == 255) {fade_up_2 = false;}
+     if(fader_2 == 0) {fade_up_2 = true;}
+     
       
       
       midi_clock_trigger();
