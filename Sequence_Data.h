@@ -1,3 +1,7 @@
+int fader_1_sequence[] = {10,10,1,1,30,30};
+int fader_2_sequence[] = {5,5,1,1,3,30};
+
+
 unsigned char Sequence[20][8][8] = {
             
  //seq1     

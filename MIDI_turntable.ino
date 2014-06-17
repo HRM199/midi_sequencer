@@ -10,7 +10,7 @@ int display_brightness = 20 ; // 0-255
 
 //// Main variables used ///////////////////////////////////
 
-int i,sequence_number,sequence_step,step_value,tens,ones,data_step,fader_1,fader_2;
+int i,sequence_number,sequence_step,step_value,tens,ones,data_step,fader_1,fader_2,fader_step_1,fader_step_2;
 int count = 1;
 boolean start_delay,counting_delay,next_step,next_sequence,last_sequence,wait_for_high,wait_for_high_2,trigger_sequence;
 unsigned long start_of_delay,debounce,debounce_2,delay_1,delay_2;
@@ -133,15 +133,19 @@ if(trigger_sequence)
       
   }
      
-     if(fade_up_1 && millis() - delay_1 >= 3) { analogWrite(fading_pin_1,fader_1); fader_1++; delay_1 = millis();}     
-     if(!fade_up_1 && millis() - delay_1 >= 1) { analogWrite(fading_pin_1, fader_1); fader_1--; delay_1 = millis();}  
-     if(fader_1 == 255) {fade_up_1 = false;}
-     if(fader_1 == 0) {fade_up_1 = true;}
+     
+     
+     if(fade_up_1 && millis() - delay_1 >= fader_1_sequence[fader_step_1]) { analogWrite(fading_pin_1,fader_1); fader_1++; delay_1 = millis();}     
+     else if(!fade_up_1 && millis() - delay_1 >= fader_1_sequence[fader_step_1]) { analogWrite(fading_pin_1, fader_1); fader_1--; delay_1 = millis();}  
+     
+     if(fader_1 == 255) {fade_up_1 = false; fader_step_1++;}
+     else if(fader_1 == 0) {fade_up_1 = true; fader_step_1++;}
+     if(fader_step_1 >= 4){ fader_step_1 = 0;}
      
      if(fade_up_2 && millis() - delay_2 >= 6) { analogWrite(fading_pin_2,fader_2); fader_2++; delay_2 = millis();}     
-     if(!fade_up_2 && millis() - delay_2 >= 6) { analogWrite(fading_pin_2, fader_2); fader_2--; delay_2 = millis();}  
+     else if(!fade_up_2 && millis() - delay_2 >= 6) { analogWrite(fading_pin_2, fader_2); fader_2--; delay_2 = millis();}  
      if(fader_2 == 255) {fade_up_2 = false;}
-     if(fader_2 == 0) {fade_up_2 = true;}
+     else if(fader_2 == 0) {fade_up_2 = true;}
      
       
       
