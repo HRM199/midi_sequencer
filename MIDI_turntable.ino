@@ -8,14 +8,14 @@ int step_delay = 500;
 int display_brightness = 20 ; // 0-255
 
 
-// Main variables used ///////////////////////////////////
+//// Main variables used ///////////////////////////////////
 
 int i,sequence_number,sequence_step,step_value,tens,ones,data_step;
 boolean start_delay,counting_delay,next_step,next_sequence,last_sequence,wait_for_high,wait_for_high_2,trigger_sequence;
 unsigned long start_of_delay,debounce,debounce_2;
 
 
-////// MIDI Variables ////////////////////////////////////
+//// MIDI Variables ////////////////////////////////////
 
 byte midi_start = 0xfa;
 byte midi_stop = 0xfc;
@@ -24,9 +24,10 @@ byte data;
 int baudrate = 31250;
 int midi_mode,midi_trigger;
 
-////// Pin Mapping //////////////////////////////////////
+//// Pin Mapping & PWM ////////////////////////////////
 
-int pinmap[8] = {2,11,9,3,4,12,10,5}; // Mega Pinmap
+int pinmap[8] = {6,2,9,11,7,5,10,12}; // New pinmap reflects timers
+//int pinmap[8] = {2,11,9,3,4,12,10,5}; // Mega Pinmap
 //int pinmap[8] = {2,5,9,11,8,6,10,3}; // Uno Pinmap
 int count =1;
 
@@ -34,7 +35,14 @@ int next_button = 14;
 int last_button = 15;
 
 
+
+
 void setup() {
+  
+TCCR4B = TCCR4B & 0b11111000 | 0x03;
+TCCR3B = TCCR3B & 0b11111000 | 0x03;
+TCCR2B = TCCR2B & 0b11111000 | 0x03;
+TCCR1B = TCCR1B & 0b11111000 | 0x03;
   
 Serial.begin(baudrate);
 
