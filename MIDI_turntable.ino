@@ -133,21 +133,52 @@ if(trigger_sequence)
       
   }
      
+//// code for the faders //////////////////////////////////////////////   
+     
+     if(fade_up_1 && millis() - delay_1 >= fader_1_sequence[fader_step_1]) 
+       { 
+       analogWrite(fading_pin_1,fader_1); 
+       fader_1++; 
+       delay_1 = millis();
+       if(fader_1 == 255 ) { fader_step_1++; }
+       }
+  
+       
+     else if(!fade_up_1 && millis() - delay_1 >= fader_1_sequence[fader_step_1]) 
+       { 
+       analogWrite(fading_pin_1, fader_1); 
+       fader_1--; 
+       delay_1 = millis();
+       if(fader_1 == 0 ) { fader_step_1++; }
+       }  
+     
+     if(fader_1 == 255 ) {fade_up_1 = false; }
+     if(fader_1 == 0) {fade_up_1 = true; }
+     if(fader_step_1 >= sizeof(fader_1_sequence) / 2){ fader_step_1 = 0;}
      
      
-     if(fade_up_1 && millis() - delay_1 >= fader_1_sequence[fader_step_1]) { analogWrite(fading_pin_1,fader_1); fader_1++; delay_1 = millis();}     
-     else if(!fade_up_1 && millis() - delay_1 >= fader_1_sequence[fader_step_1]) { analogWrite(fading_pin_1, fader_1); fader_1--; delay_1 = millis();}  
+      if(fade_up_2 && millis() - delay_2 >= fader_2_sequence[fader_step_2]) 
+       { 
+       analogWrite(fading_pin_2,fader_2); 
+       fader_2++; 
+       delay_2 = millis();
+       if(fader_2 == 255 ) { fader_step_2++; }
+       }
+  
+       
+     else if(!fade_up_2 && millis() - delay_2 >= fader_2_sequence[fader_step_2]) 
+       { 
+       analogWrite(fading_pin_2, fader_2); 
+       fader_2--; 
+       delay_2 = millis();
+       if(fader_2 == 0 ) { fader_step_2++; }
+       }  
      
-     if(fader_1 == 255) {fade_up_1 = false; fader_step_1++;}
-     else if(fader_1 == 0) {fade_up_1 = true; fader_step_1++;}
-     if(fader_step_1 >= 4){ fader_step_1 = 0;}
+     if(fader_2 == 255 ) {fade_up_2 = false; }
+     if(fader_2 == 0) {fade_up_2 = true; }
+     if(fader_step_2 >= sizeof(fader_2_sequence) / 2){ fader_step_2 = 0;}
      
-     if(fade_up_2 && millis() - delay_2 >= 6) { analogWrite(fading_pin_2,fader_2); fader_2++; delay_2 = millis();}     
-     else if(!fade_up_2 && millis() - delay_2 >= 6) { analogWrite(fading_pin_2, fader_2); fader_2--; delay_2 = millis();}  
-     if(fader_2 == 255) {fade_up_2 = false;}
-     else if(fader_2 == 0) {fade_up_2 = true;}
-     
-      
+//////////////////////////////////////////////////////////////////////////    
       
       midi_clock_trigger();
       
