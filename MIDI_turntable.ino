@@ -12,7 +12,7 @@ int display_brightness = 20 ; // 0-255
 
 int i,sequence_number,sequence_step,step_value,tens,ones,data_step,fader_1,fader_2,fader_step_1,fader_step_2;
 int count = 1;
-boolean start_delay,counting_delay,next_step,next_sequence,last_sequence,wait_for_high,wait_for_high_2,trigger_sequence;
+boolean start_delay,counting_delay,next_step,next_sequence,last_sequence,wait_for_high,wait_for_high_2,trigger_sequence,disable_fade_1,disable_fade_2;
 unsigned long start_of_delay,debounce,debounce_2,delay_1,delay_2;
 
 int fade_up_1 = true,fade_up_2 = true;
@@ -37,6 +37,9 @@ int fading_pin_2 = 8;
 
 int next_button = 14;
 int last_button = 15;
+
+int fade_switch_1 = 16;
+int fade_switch_2 = 17;
 
 void setup() {
   
@@ -67,6 +70,12 @@ digitalWrite(next_button,1);
 
 pinMode(last_button,INPUT);
 digitalWrite(last_button,1);
+
+pinMode(fade_switch_1,INPUT);
+digitalWrite(fade_switch_1,1);
+
+pinMode(fade_switch_2,INPUT);
+digitalWrite(fade_switch_2,1);
 
 digitalWrite(A0,0);
  
@@ -134,7 +143,8 @@ if(trigger_sequence)
   }
      
 //// code for the faders //////////////////////////////////////////////   
-     
+if(!disable_fade_1)
+  {
      if(fade_up_1 && millis() - delay_1 >= fader_1_sequence[fader_step_1]) 
        { 
        analogWrite(fading_pin_1,fader_1); 
@@ -155,8 +165,18 @@ if(trigger_sequence)
      if(fader_1 == 255 ) {fade_up_1 = false; }
      if(fader_1 == 0) {fade_up_1 = true; }
      if(fader_step_1 >= sizeof(fader_1_sequence) / 2){ fader_step_1 = 0;}
+  }
+ else {
+       analogWrite(fading_pin_1,0);
+       fade_up_1 = true;
+       fader_1 = 0;
+       fader_step_1 = 0;
+       }
+  
+ disable_fade_1 = digitalRead(fade_switch_1);
      
-     
+ if(!disable_fade_2)
+  {    
       if(fade_up_2 && millis() - delay_2 >= fader_2_sequence[fader_step_2]) 
        { 
        analogWrite(fading_pin_2,fader_2); 
@@ -177,6 +197,20 @@ if(trigger_sequence)
      if(fader_2 == 255 ) {fade_up_2 = false; }
      if(fader_2 == 0) {fade_up_2 = true; }
      if(fader_step_2 >= sizeof(fader_2_sequence) / 2){ fader_step_2 = 0;}
+     
+       }
+ else {
+       analogWrite(fading_pin_2,0);
+       fade_up_2 = true;
+       fader_2 = 0;
+       fader_step_2 = 0;
+       }
+       
+disable_fade_2 = digitalRead(fade_switch_2);
+  
+  
+  
+ 
      
 //////////////////////////////////////////////////////////////////////////    
       
