@@ -7,7 +7,7 @@
 int step_delay = 221;
 int display_brightness = 20 ; // 0-255
 int sensitivity = 1;
-int trigger_debounce = 50000;
+int trigger_debounce = 5000;
 
 
 //// Main variables used ///////////////////////////////////
@@ -234,7 +234,7 @@ disable_fade_2 = digitalRead(fade_switch_2);
       if(!digitalRead(next_button) && !next_sequence){ next_sequence = true; }
       if(!digitalRead(last_button) && !last_sequence){ last_sequence = true; }
       
-      if(sequence_number >= 15){ sequence_number = 0; }
+      if(sequence_number >= 32){ sequence_number = 0; }
       if(sequence_number < 0){ sequence_number = 0; }
       digitalWrite(13,next_sequence);
       
