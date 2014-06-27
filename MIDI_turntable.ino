@@ -4,8 +4,10 @@
 
 // user defined variables ////////////////////////////////
 
-int step_delay = 500;
+int step_delay = 221;
 int display_brightness = 20 ; // 0-255
+int sensitivity = 1;
+int trigger_debounce = 50000;
 
 
 //// Main variables used ///////////////////////////////////
@@ -43,10 +45,10 @@ int fade_switch_2 = 17;
 
 void setup() {
   
-TCCR4B = TCCR4B & 0b11111000 | 0x05;
+TCCR4B = TCCR4B & 0b11111000 | 0x05; // sect 
 TCCR3B = TCCR3B & 0b11111000 | 0x03;
-TCCR2B = TCCR2B & 0b11111000 | 0x03;
-TCCR1B = TCCR1B & 0b11111000 | 0x03;
+TCCR2B = TCCR2B & 0b11111000 | 0x06;
+TCCR1B = TCCR1B & 0b11111000 | 0x05;
 
 
 ///////////////////////////////////////////////////////
@@ -77,16 +79,11 @@ digitalWrite(fade_switch_1,1);
 pinMode(fade_switch_2,INPUT);
 digitalWrite(fade_switch_2,1);
 
-digitalWrite(A0,0);
+//digitalWrite(A0,0);
  
 ////////// Setup sequence pins output ////////////////
 
 for (i=0;i<8;i++){ pinMode(pinmap[i],OUTPUT);  }
-
-// PW frequency of the output pins
-
- TCCR1B = TCCR1B & 0b11111000 | 0x03; // Pin 12 & 11
- TCCR2B = TCCR2B & 0b11111000 | 0x06; // Pin 10 & 9
  
 //////////////////////////////////////////////////////
   
@@ -218,7 +215,7 @@ disable_fade_2 = digitalRead(fade_switch_2);
       
 ///////////////// Audio Trigger /////////////////////////////////////////    
 
-      if(analogRead(A0) > 10 && !wait_for_high )
+      if(analogRead(A0) > sensitivity && !wait_for_high  )
       { 
         trigger_sequence=true; 
         sequence_step = 0; 
@@ -229,7 +226,7 @@ disable_fade_2 = digitalRead(fade_switch_2);
           if(next_sequence){next_sequence=false; sequence_number++;}
           if(last_sequence){last_sequence=false; sequence_number--;}
        }
-      else if (analogRead(A0) <= 10 && debounce >= 10000) {wait_for_high = false; dot(0,0);}
+      else if (analogRead(A0) <= 10 && debounce >= trigger_debounce) {wait_for_high = false; dot(0,0);}
       else { debounce++; }
       
 ///////////////// Next and Last buttons /////////////////////////////////////////      
