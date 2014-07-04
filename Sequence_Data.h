@@ -2,6 +2,46 @@ int fader_1_sequence[] = {10,10,20,20,10,10,30,30};
 int fader_2_sequence[] = {10,10,20};
 
 
+// Repeats per seq 
+unsigned char repeat[33] = {  
+     4,//seq1
+     1,//seq2
+     32,//seq3
+     32,//seq4
+     35,//seq5
+     12,//seq6
+     21,//seq7
+     6,//seq8
+     2,//seq9
+     16,//seq10
+     15,//seq11
+     1,//seq12
+     32,//seq13
+     32,//seq14
+     16,//seq15
+     16,//seq16
+     32,//seq17
+     32,//seq18
+     32,//seq19
+     32,//seq20
+     16,//seq21
+     6,//seq22
+     2,//seq23    
+     5,//seq24
+     3,//seq25
+     32,//seq26
+     16,//seq27
+     16,//seq28
+     48,//seq29
+     32,//seq30
+     16,//seq31
+     16,//seq32
+     22//seq33
+     
+     };
+     
+
+
 unsigned char Sequence[33][8][8] = {
             
  //seq1     

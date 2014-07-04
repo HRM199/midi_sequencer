@@ -12,7 +12,7 @@ int trigger_debounce = 5000;
 
 //// Main variables used ///////////////////////////////////
 
-int i,sequence_number,sequence_step,step_value,tens,ones,data_step,fader_1,fader_2,fader_step_1,fader_step_2;
+int i,sequence_number,sequence_step,step_value,tens,ones,data_step,fader_1,fader_2,fader_step_1,fader_step_2,loop_length;
 int count = 1;
 boolean start_delay,counting_delay,next_step,next_sequence,last_sequence,wait_for_high,wait_for_high_2,trigger_sequence,disable_fade_1,disable_fade_2;
 unsigned long start_of_delay,debounce,debounce_2,delay_1,delay_2;
@@ -138,7 +138,55 @@ if(trigger_sequence)
       }
       
   }
+
+      
+      midi_clock_trigger();
+      
+///////////////// Audio Trigger /////////////////////////////////////////    
+
+      if(analogRead(A0) > sensitivity && !wait_for_high  )
+      { 
+        trigger_sequence=true;  // this makes the steps begin
+        sequence_step = 0;  // reset it to 0 if steps still half way through
+        counting_delay = false;  // turn this off so that it instantly changes
+        
+        // Analog read A0 Debouncing stuff
+        
+        wait_for_high = true; 
+        debounce = 0;
+        
+        // increment loop_length
+        
+        loop_length++; 
+        
+        if(loop_length > repeat[sequence_number]){next_sequence = true; loop_length = 0;}
+        if(sequence_number >= 33){ sequence_number = 0;}
+        
+        if(next_sequence){next_sequence=false; sequence_number++;}
+        if(last_sequence){last_sequence=false; sequence_number--;}
+        
+
+       
+
+       }
+      else if (analogRead(A0) <= 10 && debounce >= trigger_debounce) {wait_for_high = false; dot(0,0);}
+      else { debounce++; }
+      
+
+      
+///////////////// Next and Last buttons /////////////////////////////////////////      
+      
+      if(!digitalRead(next_button) && !next_sequence){ next_sequence = true; }
+      if(!digitalRead(last_button) && !last_sequence){ last_sequence = true; }
+      
+      if(sequence_number >= 32){ sequence_number = 0; }
+      if(sequence_number < 0){ sequence_number = 0; }
+      digitalWrite(13,next_sequence);
+      
+     // delayMicroseconds(100);
      
+     
+          
 //// code for the faders //////////////////////////////////////////////   
 if(!disable_fade_1)
   {
@@ -210,35 +258,9 @@ disable_fade_2 = digitalRead(fade_switch_2);
  
      
 //////////////////////////////////////////////////////////////////////////    
-      
-      midi_clock_trigger();
-      
-///////////////// Audio Trigger /////////////////////////////////////////    
 
-      if(analogRead(A0) > sensitivity && !wait_for_high  )
-      { 
-        trigger_sequence=true; 
-        sequence_step = 0; 
-        counting_delay = false; 
-        wait_for_high = true; 
-        debounce = 0;
-        dot(0,1);
-          if(next_sequence){next_sequence=false; sequence_number++;}
-          if(last_sequence){last_sequence=false; sequence_number--;}
-       }
-      else if (analogRead(A0) <= 10 && debounce >= trigger_debounce) {wait_for_high = false; dot(0,0);}
-      else { debounce++; }
-      
-///////////////// Next and Last buttons /////////////////////////////////////////      
-      
-      if(!digitalRead(next_button) && !next_sequence){ next_sequence = true; }
-      if(!digitalRead(last_button) && !last_sequence){ last_sequence = true; }
-      
-      if(sequence_number >= 32){ sequence_number = 0; }
-      if(sequence_number < 0){ sequence_number = 0; }
-      digitalWrite(13,next_sequence);
-      
-     // delayMicroseconds(100);
+
+
      
   }
     
