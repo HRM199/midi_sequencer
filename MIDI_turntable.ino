@@ -6,15 +6,13 @@
 
 int step_delay = 221;
 int display_brightness = 20 ; // 0-255
-int sensitivity = 50;
+int sensitivity = 1;
 int trigger_debounce = 5000;
-int composition_length = 34;
 
 
 //// Main variables used ///////////////////////////////////
 
 int i,sequence_number,sequence_step,step_value,tens,ones,data_step,fader_1,fader_2,fader_step_1,fader_step_2,loop_length;
-
 int count = 1;
 boolean start_delay,counting_delay,next_step,next_sequence,last_sequence,wait_for_high,wait_for_high_2,trigger_sequence,disable_fade_1,disable_fade_2;
 unsigned long start_of_delay,debounce,debounce_2,delay_1,delay_2;
@@ -44,6 +42,8 @@ int last_button = 15;
 
 int fade_switch_1 = 16;
 int fade_switch_2 = 17;
+
+int loop_or_play_switch = 18;
 
 void setup() {
   
@@ -80,6 +80,10 @@ digitalWrite(fade_switch_1,1);
 
 pinMode(fade_switch_2,INPUT);
 digitalWrite(fade_switch_2,1);
+
+pinMode(loop_or_play_switch,INPUT);
+digitalWrite(fade_switch_2,1);
+
 
 //digitalWrite(A0,0);
  
@@ -158,13 +162,18 @@ if(trigger_sequence)
         debounce = 0;
         
         // increment loop_length
-             
-        if(loop_length >= repeat[sequence_number]){next_sequence = true; loop_length = 0;}
+        
+        if(!digitalRead(loop_or_play_switch))
+        {
+          loop_length++; 
+        
+        if(loop_length > repeat[sequence_number]){next_sequence = true; loop_length = 0;}
+        if(sequence_number >= 33){ sequence_number = 0;}
+        }
         
         if(next_sequence){next_sequence=false; sequence_number++;}
         if(last_sequence){last_sequence=false; sequence_number--;}
         
-         loop_length++; 
         
 
        
@@ -180,7 +189,7 @@ if(trigger_sequence)
       if(!digitalRead(next_button) && !next_sequence){ next_sequence = true; }
       if(!digitalRead(last_button) && !last_sequence){ last_sequence = true; }
       
-      if(sequence_number > composition_length){ sequence_number = 0; }
+      if(sequence_number >= 32){ sequence_number = 0; }
       if(sequence_number < 0){ sequence_number = 0; }
       digitalWrite(13,next_sequence);
       
